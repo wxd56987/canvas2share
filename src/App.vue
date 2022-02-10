@@ -1,7 +1,6 @@
 <template>
   <div id="app">
     <button @click="generateQr">生成分享图</button>
-    <img :src="qrimg" alt="" srcset="" class="qrimg" />
     <canvas id="my-canvas" width="350" height="777"></canvas>
     <div>---------canvas-to-img--------------</div>
   </div>
@@ -20,6 +19,11 @@ export default class App extends Vue {
 
   constructor() {
     super();
+    // 本地图片，需要html，标签加载
+    var image = document.createElement("img");
+    image.src = this.qrimg;
+    image.setAttribute('class', 'qrimg')
+    document.body.appendChild(image);
   }
   generateQr = (): void => {
     this.ctx = new CanvasDrawer("my-canvas");
