@@ -29,7 +29,7 @@ interface ImageOptions {
   /**
    * 图片地址
    */
-  image: string;
+  image: CanvasImageSource;
 }
 
 interface ArcOptions {
@@ -166,7 +166,7 @@ export default class CanvasDrawer implements CanvasDrawerInterface {
    * @param options 矩形宽、高、颜色、圆角
    */
   private rectRadius(x = 0, y = 0, options: DefaultOptions = {}): void {
-    const { width: w, height: h, color = "#fff", radius: r = 3 } = options;
+    const { width: w, height: h, color = "#fff", radius: r = 8 } = options;
     const [calcX, calcY, calcW, calcH] = [x, y, w, h].map((item) =>
       this.getCalcNum(item)
     );
@@ -401,24 +401,16 @@ export default class CanvasDrawer implements CanvasDrawerInterface {
    * @param y 图片y轴坐标
    * @param options 长、宽、图像地址（必须为本地地址）
    */
-  public image(x: number, y: number, options: ImageOptions): Promise<void> {
+  public image(x: number, y: number, options: ImageOptions): void {
     const { width, height, image } = options;
-
-    const img = new Image(); // 创建img元素
-    img.crossOrigin = "anonymous";
-    img.src = image; // 设置图片源地址
-    return new Promise((resolve) => {
-      img.onload = () => {
-        this.ctx.drawImage(
-          img,
-          this.getCalcNum(x),
-          this.getCalcNum(y),
-          this.getCalcNum(width),
-          this.getCalcNum(height)
-        );
-        resolve()
-      };
-    });
+    
+    this.ctx.drawImage(
+      image,
+      this.getCalcNum(x),
+      this.getCalcNum(y),
+      this.getCalcNum(width),
+      this.getCalcNum(height)
+    );
   }
 
   /**
@@ -445,18 +437,13 @@ export default class CanvasDrawer implements CanvasDrawerInterface {
 
     this.ctx.clip();
 
-    const img = new Image(); // 创建img元素
-    img.crossOrigin = "anonymous";
-    img.src = image; // 设置图片源地址
-    img.onload = () => {
-      this.ctx.drawImage(
-        img,
-        this.getCalcNum(x),
-        this.getCalcNum(y),
-        this.getCalcNum(width),
-        this.getCalcNum(height)
-      );
-    };
+    this.ctx.drawImage(
+      image,
+      this.getCalcNum(x),
+      this.getCalcNum(y),
+      this.getCalcNum(width),
+      this.getCalcNum(height)
+    );
   }
 
   /**
@@ -474,18 +461,13 @@ export default class CanvasDrawer implements CanvasDrawerInterface {
 
     this.ctx.clip();
 
-    const img = new Image(); // 创建img元素
-    img.crossOrigin = "anonymous";
-    img.src = image; // 设置图片源地址
-    img.onload = () => {
-      this.ctx.drawImage(
-        img,
-        this.getCalcNum(x),
-        this.getCalcNum(y),
-        this.getCalcNum(width),
-        this.getCalcNum(height)
-      );
-    };
+    this.ctx.drawImage(
+      image,
+      this.getCalcNum(x),
+      this.getCalcNum(y),
+      this.getCalcNum(width),
+      this.getCalcNum(height)
+    );
   }
 
   /**

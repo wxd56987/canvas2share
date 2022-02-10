@@ -49,7 +49,7 @@ var CanvasDrawer = /** @class */ (function () {
         if (x === void 0) { x = 0; }
         if (y === void 0) { y = 0; }
         if (options === void 0) { options = {}; }
-        var w = options.width, h = options.height, _a = options.color, color = _a === void 0 ? "#fff" : _a, _b = options.radius, r = _b === void 0 ? 3 : _b;
+        var w = options.width, h = options.height, _a = options.color, color = _a === void 0 ? "#fff" : _a, _b = options.radius, r = _b === void 0 ? 8 : _b;
         var _c = [x, y, w, h].map(function (item) {
             return _this.getCalcNum(item);
         }), calcX = _c[0], calcY = _c[1], calcW = _c[2], calcH = _c[3];
@@ -239,17 +239,8 @@ var CanvasDrawer = /** @class */ (function () {
      * @param options 长、宽、图像地址（必须为本地地址）
      */
     CanvasDrawer.prototype.image = function (x, y, options) {
-        var _this = this;
         var width = options.width, height = options.height, image = options.image;
-        var img = new Image(); // 创建img元素
-        img.crossOrigin = "anonymous";
-        img.src = image; // 设置图片源地址
-        return new Promise(function (resolve) {
-            img.onload = function () {
-                _this.ctx.drawImage(img, _this.getCalcNum(x), _this.getCalcNum(y), _this.getCalcNum(width), _this.getCalcNum(height));
-                resolve();
-            };
-        });
+        this.ctx.drawImage(image, this.getCalcNum(x), this.getCalcNum(y), this.getCalcNum(width), this.getCalcNum(height));
     };
     /**
      * 圆形图片
@@ -258,7 +249,6 @@ var CanvasDrawer = /** @class */ (function () {
      * @param options 长、宽、图像地址（必须为本地地址）
      */
     CanvasDrawer.prototype.circleImage = function (x, y, options) {
-        var _this = this;
         var width = options.width, height = options.height, image = options.image;
         // 绘制裁剪路径
         this.ctx.strokeStyle = "transparent";
@@ -266,12 +256,7 @@ var CanvasDrawer = /** @class */ (function () {
         this.ctx.arc(this.getCalcNum(x + width / 2), this.getCalcNum(y + height / 2), this.getCalcNum(width) / 2, 0, Math.PI * 2, false);
         this.ctx.stroke();
         this.ctx.clip();
-        var img = new Image(); // 创建img元素
-        img.crossOrigin = "anonymous";
-        img.src = image; // 设置图片源地址
-        img.onload = function () {
-            _this.ctx.drawImage(img, _this.getCalcNum(x), _this.getCalcNum(y), _this.getCalcNum(width), _this.getCalcNum(height));
-        };
+        this.ctx.drawImage(image, this.getCalcNum(x), this.getCalcNum(y), this.getCalcNum(width), this.getCalcNum(height));
     };
     /**
      * 圆角图片
@@ -281,17 +266,11 @@ var CanvasDrawer = /** @class */ (function () {
      * @param options 长、宽、图像地址（必须为本地地址）
      */
     CanvasDrawer.prototype.radiusImage = function (x, y, options) {
-        var _this = this;
         var width = options.width, height = options.height, image = options.image;
         // 绘制裁剪路径
         this.rectRadius(x, y, options);
         this.ctx.clip();
-        var img = new Image(); // 创建img元素
-        img.crossOrigin = "anonymous";
-        img.src = image; // 设置图片源地址
-        img.onload = function () {
-            _this.ctx.drawImage(img, _this.getCalcNum(x), _this.getCalcNum(y), _this.getCalcNum(width), _this.getCalcNum(height));
-        };
+        this.ctx.drawImage(image, this.getCalcNum(x), this.getCalcNum(y), this.getCalcNum(width), this.getCalcNum(height));
     };
     /**
      * 生成图片

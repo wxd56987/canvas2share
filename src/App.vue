@@ -1,8 +1,7 @@
 <template>
   <div id="app">
     <button @click="generateQr">生成分享图</button>
-    <button @click="exportQr">导出分享图</button>
-
+    <img :src="qrimg" alt="" srcset="" class="qrimg" />
     <canvas id="my-canvas" width="350" height="777"></canvas>
     <div>---------canvas-to-img--------------</div>
   </div>
@@ -25,66 +24,78 @@ export default class App extends Vue {
   generateQr = (): void => {
     this.ctx = new CanvasDrawer("my-canvas");
 
-    // 由于canvas绘制图片异步，大背景会遮罩，这里大背景采用promise
-    this.ctx
-      .image(0, 0, {
+    // 由于网络图片加载异步，采用promise，加载绘制
+    Promise.all([
+      this.loadImage(
+        "https://img1.dxycdn.com/2022/0208/572/0874533829616111353-2.png"
+      ),
+      this.loadImage(
+        "https://img1.dxycdn.com/2021/1206/295/3792855844643429153-2.png"
+      ),
+      this.loadImage(
+        "https://img1.dxycdn.com/2022/0208/204/4998527042828111353-2.png"
+      ),
+    ]).then((imgs) => {
+      // 背景图片
+      this.ctx.image(0, 0, {
         width: 355,
         height: 777,
-        image:
-          "https://img1.dxycdn.com/2022/0208/572/0874533829616111353-2.png",
-      })
-      .then(() => {
-        // 头像
-        this.ctx.image(48, 57, {
-          width: 32,
-          height: 32,
-          image: "https://img1.dxycdn.com/2021/1206/295/3792855844643429153-2.png",
-        });
-        // 昵称
-        this.ctx.fillText(
-          "一个大晴天",
-          94,
-          64,
-          "18 #FFFFFF 1 bold left",
-          200,
-          1
-        );
-        // title
-        this.ctx.image(15, 94, {
-          width: 325,
-          height: 516.5,
-          image:
-            "https://img1.dxycdn.com/2022/0208/204/4998527042828111353-2.png",
-        });
-        //qr 边框
-        this.ctx.rect(250, 636, {
-          width: 90,
-          height: 90,
-          color: "#ac8dfc",
-          radius: 10,
-        });
-        //qr
-        this.ctx.image(260, 646, {
-          width: 70,
-          height: 70,
-          image: this.qrimg,
-        });
-        // 解锁文案
-        this.ctx.fillText(
-          "解锁身份领取奖品",
-          248,
-          737,
-          "12 #FFFFFF 1 bold left",
-          200,
-          1
-        );
+        image: imgs[0],
       });
+      // 头像
+      this.ctx.image(48, 57, {
+        width: 32,
+        height: 32,
+        image: imgs[1],
+      });
+      // title
+      this.ctx.image(15, 94, {
+        width: 325,
+        height: 516.5,
+        image: imgs[2],
+      });
+      //qr 边框
+      this.ctx.rect(250, 636, {
+        width: 90,
+        height: 90,
+        color: "#ac8dfc",
+        radius: 10,
+      });
+      //qr 本地图片需要 在html标签引入
+      this.ctx.image(260, 646, {
+        width: 70,
+        height: 70,
+        image: document.querySelector(".qrimg"),
+      });
+      // 昵称
+      this.ctx.fillText("一个大晴天", 94, 64, "18 #FFFFFF 1 bold left", 200, 1);
+      // 解锁文案
+      this.ctx.fillText(
+        "解锁身份领取奖品",
+        248,
+        737,
+        "12 #FFFFFF 1 bold left",
+        200,
+        1
+      );
+
+      // 生成图片
+      this.exportQr()
+    });
   };
   exportQr = (): void => {
     var image = document.createElement("img");
     image.src = this.ctx.generateImage();
     document.body.appendChild(image);
   };
+  loadImage(url: string): Promise<HTMLImageElement> {
+    return new Promise((resolve) => {
+      const img = new Image();
+      img.crossOrigin = "anonymous";
+      img.onload = () => resolve(img);
+      img.src = url;
+    });
+  }
 }
 </script>
 
@@ -99,5 +110,8 @@ export default class App extends Vue {
 }
 img {
   width: 100%;
+}
+.qrimg {
+  display: none;
 }
 </style>
